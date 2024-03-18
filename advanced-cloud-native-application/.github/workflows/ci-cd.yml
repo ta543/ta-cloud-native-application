@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD
 
 on:
   push:
@@ -13,31 +13,62 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Setup Python
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: 3.9
 
-    - name: Install dependencies
-      run: pip install -r microservices/service1/requirements.txt
-
-    - name: Build and push Docker image for service1
-      uses: docker/build-push-action@v2
+    - name: Cache Python dependencies
+      uses: actions/cache@v2
       with:
-        context: microservices/service1
-        push: true
-        tags: your-registry/service1:latest
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
-    - name: Install dependencies
-      run: pip install -r microservices/service2/requirements.txt
-
-    - name: Build and push Docker image for service2
-      uses: docker/build-push-action@v2
-      with:
-        context: microservices/service2
-        push: true
-        tags: your-registry/service2:latest
-
-    - name: Deploy using Helm
+    - name: Install Python dependencies
       run: |
-        helm install myapp helm/application-chart
+        pip install -r microservices/service1/requirements.txt
+        pip install -r microservices/service2/requirements.txt
+
+    - name: Run unit tests for service1
+      run: |
+        pytest microservices/service1/tests/unit
+
+    - name: Run unit tests for service2
+      run: |
+        pytest microservices/service2/tests/unit
+
+    - name: Build and push Docker images
+      run: |
+        docker build -t ta543/service1:v1 microservices/service1
+        docker build -t ta543/service2:v1 microservices/service2
+        docker push ta543/service1:v1
+        docker push ta543/service2:v1
+
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: '3.6.0'
+
+    - name: Lint Helm charts
+      run: |
+        helm lint helm/application-chart
+
+    - name: Deploy Helm charts
+      run: |
+        helm upgrade --install application helm/application-chart
+
+    - name: Test deployed application
+      run: |
+        # Add commands to test the deployed application (e.g., integration tests)
+        echo "Running integration tests..."
+
+    - name: Clean up Helm releases
+      run: |
+        helm uninstall application
+
+    - name: Clean up Docker images
+      run: |
+        # Add commands to clean up Docker images if needed
+        echo "Cleaning up Docker images..."

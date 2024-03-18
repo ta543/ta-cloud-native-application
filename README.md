@@ -10,7 +10,7 @@ This project is about constructing a **cloud-native microservices application** 
 - **Containerization** 🐳: Utilize Docker to containerize each microservice, creating lightweight and portable containers.
 - **Orchestration with Kubernetes** 🚢: Employ Kubernetes to manage the containerized applications, ensuring scalability, reliability, and efficient resource utilization.
 - **Service Mesh with Istio** 🕸️: Leverage Istio for managing service-to-service communication, traffic routing, and observability within the microservices ecosystem.
-- **CI/CD Pipeline** 🔄: Establish a comprehensive CI/CD pipeline utilizing tool like GitHub Actions for automated testing, building, and deployment.
+- **CI/CD Pipeline** 🔄: Establish a comprehensive CI/CD pipeline utilizing GitHub Actions for automated testing, building, and deployment.
 - **Monitoring and Logging** 📊: Integrate monitoring and logging tools such as Prometheus and Grafana for effective metrics collection, visualization, and alerting.
 - **Security** 🔒: Apply security best practices including network policies, secrets management, and role-based access control (RBAC) within Kubernetes and Istio environments.
 - **Fault Tolerance** ⚙️: Implement fault tolerance mechanisms like circuit breaking and retries to gracefully handle potential failures.
