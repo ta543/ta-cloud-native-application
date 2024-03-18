@@ -1,0 +1,25 @@
+image:
+  repository: ta543/cloud-native-application
+  tag: latest
+
+deployment:
+  replicas: 3
+
+containerPort: 8080
+
+service:
+  port: 80
+  type: ClusterIP
+  nodePort: 30000
+
+resources: {}
+
+env:
+  - name: ENV_VARIABLE_1
+    value: "value1"
+  - name: ENV_VARIABLE_2
+    value: "value2"
+
+command: ["/bin/sh", "-c"]
+args:
+  - "echo Hello, World!"

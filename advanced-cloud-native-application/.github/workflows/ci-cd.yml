@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install -r microservices/service1/requirements.txt
+
+    - name: Build and push Docker image for service1
+      uses: docker/build-push-action@v2
+      with:
+        context: microservices/service1
+        push: true
+        tags: your-registry/service1:latest
+
+    - name: Install dependencies
+      run: pip install -r microservices/service2/requirements.txt
+
+    - name: Build and push Docker image for service2
+      uses: docker/build-push-action@v2
+      with:
+        context: microservices/service2
+        push: true
+        tags: your-registry/service2:latest
+
+    - name: Deploy using Helm
+      run: |
+        helm install myapp helm/application-chart
